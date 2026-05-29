@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from '../users/user.dto'
 import { LoginDto } from './auth.dto';
@@ -50,18 +50,18 @@ export class AuthService {
         })
 
         if(!user){
-            throw new BadRequestException('Invalid email or password');
+            throw new UnauthorizedException('Invalid email or password');
         }
 
         const isValidPassword = await bcrypt.compare(password,user.password);
 
         if(!isValidPassword){
-            throw new BadRequestException('Invalid email or password');
+            throw new UnauthorizedException('Invalid email or password');
         }
 
         // create token 
 
-        const token = this.jwtService.sign({userId:user.id,email:user.email});
+        const token = this.jwtService.sign({sub:user.id,email:user.email});
 
         return {
             message:'Login successful',
