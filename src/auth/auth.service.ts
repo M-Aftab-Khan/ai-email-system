@@ -36,8 +36,8 @@ export class AuthService {
 
         await this.emailQueue.addEmailJob({
             to: user.email,
-            subject: 'Welcome to AI Email System 🎉',
-            body: `Hi ${user.name},\n\nThanks for registering! Your account has been created successfully.\n\nWe're glad to have you on board.`,
+            type: 'welcome',
+            name: user.name,
         });
 
         return {

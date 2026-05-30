@@ -1,15 +1,29 @@
-import {Processor, WorkerHost} from '@nestjs/bullmq';
+import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 
 import * as nodemailer from 'nodemailer';
+import { OpenAiService } from 'src/openai/openai.service';
 
 
 @Processor('email-queue')
 export class EmailQueueProcessor extends WorkerHost {
-    async process(job: Job) {
-        const { to, subject, body } = job.data;
+    constructor(private readonly openAiService: OpenAiService) {
+        super();
+    }
 
-         console.log('Sending email to:', to);
+    async process(job: Job) {
+        const { to, type, name } = job.data;
+
+        let { subject, body } = job.data;
+
+        if (type === 'welcome') {
+            console.log('Generating AI welcome email for:', to);
+            const generated = await this.openAiService.generateWelcomeEmail(name);
+            subject = generated.subject;
+            body = generated.body;
+        }
+
+        console.log('Sending email to:', to);
 
         // Create a transporter using your email service configuration
 

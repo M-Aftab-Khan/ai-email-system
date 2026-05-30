@@ -10,8 +10,10 @@ export class EmailQueueService {
 
     async addEmailJob(data:{
         to:string,
-        subject:string,
-        body:string,
+        type?:'welcome',
+        name?:string,
+        subject?:string,
+        body?:string,
         delay?:number
     }) {
         await this.emailQueue.add('send-email', data,{
