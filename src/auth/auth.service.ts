@@ -4,11 +4,13 @@ import { CreateUserDto } from '../users/user.dto'
 import { LoginDto } from './auth.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import {JwtService} from '@nestjs/jwt';
+import { EmailQueueService } from 'src/email-queue/email-queue.service';
 @Injectable()
 export class AuthService {
     constructor(
         private prisma:PrismaService,
-        private jwtService:JwtService
+        private jwtService:JwtService,
+        private emailQueue:EmailQueueService
     ){}
     async registerUser(data:CreateUserDto){
 
@@ -31,6 +33,12 @@ export class AuthService {
                 password:hashedPassword
             }
         })
+
+        await this.emailQueue.addEmailJob({
+            to: user.email,
+            subject: 'Welcome to AI Email System 🎉',
+            body: `Hi ${user.name},\n\nThanks for registering! Your account has been created successfully.\n\nWe're glad to have you on board.`,
+        });
 
         return {
             messsage:'User registered successfully',

@@ -5,6 +5,8 @@ import {ConfigModule} from '@nestjs/config';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
+import { QueueModule } from './queue/queue.module';
+import { EmailQueueModule } from './email-queue/email-queue.module';
 
 @Module({
   imports: [
@@ -14,6 +16,8 @@ import { UsersModule } from './users/users.module';
     PrismaModule,
     AuthModule,
     UsersModule,
+    QueueModule,
+    EmailQueueModule,
   ],
   controllers: [AppController],
   providers: [AppService],
